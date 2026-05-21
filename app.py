@@ -327,7 +327,17 @@ if len(dados) == 0:
     st.stop()
 
 
-df = pd.DataFrame(dados)
+if len(dados) > 0:
+
+    df = pd.DataFrame(dados)
+
+else:
+
+    st.warning(
+        "Nenhum dado encontrado."
+    )
+
+    st.stop()
 
 # =====================================
 # SCORE AVANÇADO
@@ -708,7 +718,7 @@ Explique:
 
 try:
 
-    resposta = ollama.chat(
+    # response = ollama.chat(
 
         model="tinyllama",
 
