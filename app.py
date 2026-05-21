@@ -42,28 +42,14 @@ st.markdown("""
 # =====================================
 
 acoes = [
+
     "AAPL",
     "MSFT",
-    "GOOGL",
-    "AMZN",
-    "META",
     "NVDA",
-    "TSLA",
-    "AMD",
-    "NFLX",
-    "AVGO",
-    "JPM",
-    "V",
-    "MA",
-    "UNH",
-    "XOM",
-    "COST",
-    "ADBE",
-    "CRM",
-    "INTU",
-    "ORCL"
-]
+    "META",
+    "AMZN"
 
+]
 # =====================================
 # FUNÇÃO SEGURA
 # =====================================
@@ -719,27 +705,19 @@ Explique:
 try:
 
     # response = ollama.chat(
-
-        model="tinyllama",
-
-        messages=[
-
-            {
-                "role": "system",
-                "content": (
-                    "Você é um analista quantitativo "
-                    "profissional de Wall Street."
-                )
-            },
-
-            {
-                "role": "user",
-                "content": prompt
-            }
-
-        ]
-
-    )
+#
+#     model="tinyllama",
+#
+#     messages=[
+#
+#         {
+#             "role": "user",
+#             "content": prompt
+#         }
+#
+#     ]
+#
+# )
 
     analise = resposta["message"]["content"]
 
