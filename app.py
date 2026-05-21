@@ -80,51 +80,104 @@ def valor_seguro(valor, padrao=0):
 dados = []
 
 for ticker in acoes:
+
     st.write(f"Processando: {ticker}")
+
     try:
 
-        acao = yf.Ticker(ticker)
-        info = acao.info
+        df_preco = yf.download(
 
-        preco = valor_seguro(
-            info.get("currentPrice", 0)
+            ticker,
+
+            period="1y",
+
+            progress=False,
+
+            auto_adjust=True
+
         )
 
-        if preco <= 0:
+        if df_preco.empty:
 
-            st.warning(f"{ticker} sem preço válido")
+            st.warning(f"{ticker} sem dados")
 
             continue
+
+        preco = float(
+            df_preco["Close"].iloc[-1]
+        )
+
+        retorno_1y = (
+
+            (
+                df_preco["Close"].iloc[-1]
+                /
+                df_preco["Close"].iloc[0]
+            ) - 1
+
+        ) * 100
+
+        volatilidade = (
+
+            df_preco["Close"]
+            .pct_change()
+            .std()
+
+        ) * (252 ** 0.5) * 100
+
+        momentum = (
+
+            df_preco["Close"]
+            .pct_change(90)
+            .iloc[-1]
+
+        ) * 100
+
+        sharpe = 0
+
+        if volatilidade > 0:
+
+            sharpe = retorno_1y / volatilidade
+
+        score = 0
+
+        if retorno_1y > 20:
+            score += 25
+
+        if momentum > 10:
+            score += 25
+
+        if sharpe > 1:
+            score += 25
+
+        if volatilidade < 40:
+            score += 25
+
+        dados.append({
+
+            "Ticker": ticker,
+
+            "Preço": round(preco, 2),
+
+            "Retorno 1Y %": round(retorno_1y, 2),
+
+            "Momentum 90D %": round(momentum, 2),
+
+            "Volatilidade %": round(volatilidade, 2),
+
+            "Sharpe": round(sharpe, 2),
+
+            "Score": score
+
+        })
+
         st.success(f"{ticker} carregado")
-        pe = valor_seguro(
-            info.get("trailingPE", 0)
+
+    except Exception as erro:
+
+        st.error(
+            f"Erro em {ticker}: {erro}"
         )
-
-        peg = valor_seguro(
-            info.get("pegRatio", 0)
-        )
-
-        roe = valor_seguro(
-            info.get("returnOnEquity", 0)
-        ) * 100
-
-        margem = valor_seguro(
-            info.get("profitMargins", 0)
-        ) * 100
-
-        receita_growth = valor_seguro(
-            info.get("revenueGrowth", 0)
-        ) * 100
-
-        ev_ebitda = valor_seguro(
-            info.get("enterpriseToEbitda", 0)
-        )
-
-        divida = valor_seguro(
-            info.get("debtToEquity", 0)
-        )
-
-        setor = info.get("sector", "N/A")
 
         # =====================================
         # HISTÓRICO 15 ANOS
