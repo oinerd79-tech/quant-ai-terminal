@@ -276,7 +276,8 @@ for ticker in acoes:
         # =====================================
         # SALVAR DADOS
         # =====================================
-       
+        st.success(f"{ticker} pronto para adicionar")
+        
         dados.append({
 
             "Ticker": ticker,
@@ -302,9 +303,11 @@ for ticker in acoes:
 
         })
 
-    except:
+    except Exception as erro:
 
-        pass
+    st.error(
+        f"Erro em {ticker}: {erro}"
+    )
 
 # =====================================
 # DATAFRAME
