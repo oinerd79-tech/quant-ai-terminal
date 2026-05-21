@@ -15,7 +15,7 @@ from reportlab.platypus import (
 )
 
 from reportlab.lib.styles import getSampleStyleSheet
-import ollama
+# import ollama
 
 
 st.set_page_config(
