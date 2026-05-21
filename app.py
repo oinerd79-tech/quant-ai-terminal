@@ -80,7 +80,7 @@ def valor_seguro(valor, padrao=0):
 dados = []
 
 for ticker in acoes:
-
+    st.write(f"Processando: {ticker}")
     try:
 
         acao = yf.Ticker(ticker)
@@ -91,8 +91,11 @@ for ticker in acoes:
         )
 
         if preco <= 0:
-            continue
 
+            st.warning(f"{ticker} sem preço válido")
+
+            continue
+        st.success(f"{ticker} carregado")
         pe = valor_seguro(
             info.get("trailingPE", 0)
         )
@@ -273,7 +276,7 @@ for ticker in acoes:
         # =====================================
         # SALVAR DADOS
         # =====================================
-
+       
         dados.append({
 
             "Ticker": ticker,
