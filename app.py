@@ -305,8 +305,8 @@ for ticker in acoes:
 
     except Exception as erro:
 
-    st.error(
-        f"Erro em {ticker}: {erro}"
+        st.error(
+            f"Erro em {ticker}: {erro}"
     )
 
 # =====================================
