@@ -275,8 +275,6 @@ st.dataframe(
 
 )
 
-st.subheader("📊 Score dos Ativos")
-
 st.subheader("📊 Ranking de Score")
 
 fig = px.bar(
@@ -305,6 +303,8 @@ st.plotly_chart(
 
     fig,
 
-    use_container_width=True
+    use_container_width=True,
+
+    key="grafico_score"
 
 )
