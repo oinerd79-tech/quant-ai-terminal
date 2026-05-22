@@ -1,8 +1,22 @@
+import finnhub
+from twelvedata import TDClient
 import streamlit as st
 import pandas as pd
 import yfinance as yf
 import numpy as np
 import plotly.express as px
+
+finnhub_client = finnhub.Client(
+
+    api_key=st.secrets["FINNHUB_API"]
+
+)
+
+td = TDClient(
+
+    apikey=st.secrets["TWELVE_API"]
+
+)
 
 # =========================================
 # CONFIG
@@ -306,5 +320,38 @@ st.plotly_chart(
     use_container_width=True,
 
     key="grafico_score"
+
+)
+st.subheader("🔥 Heatmap Quantitativo")
+
+fig_heat = px.treemap(
+
+    df,
+
+    path=["Ticker"],
+
+    values="Score",
+
+    color="Score",
+
+    color_continuous_scale="RdYlGn"
+
+)
+
+fig_heat.update_layout(
+
+    template="plotly_dark",
+
+    height=700
+
+)
+
+st.plotly_chart(
+
+    fig_heat,
+
+    use_container_width=True,
+
+    key="heatmap_quant"
 
 )
