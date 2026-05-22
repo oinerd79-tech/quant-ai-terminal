@@ -6,6 +6,51 @@ import yfinance as yf
 import numpy as np
 import plotly.express as px
 
+def gerar_analise(
+
+    retorno,
+    momentum,
+    volatilidade,
+    sharpe
+
+):
+
+    tendencia = "neutra"
+
+    if momentum > 20:
+        tendencia = "forte alta"
+
+    elif momentum < -10:
+        tendencia = "forte baixa"
+
+    risco = "moderado"
+
+    if volatilidade > 50:
+        risco = "alto"
+
+    elif volatilidade < 25:
+        risco = "baixo"
+
+    qualidade = "mediana"
+
+    if sharpe > 1.5:
+        qualidade = "excelente"
+
+    elif sharpe > 1:
+        qualidade = "boa"
+
+    texto = f"""
+
+    O ativo apresenta tendência de {tendencia},
+    retorno anual de {retorno:.2f}%,
+    momentum de {momentum:.2f}%,
+    volatilidade {risco}
+    e relação risco/retorno {qualidade}.
+
+    """
+
+    return texto
+
 finnhub_client = finnhub.Client(
 
     api_key=st.secrets["FINNHUB_API"]
@@ -96,6 +141,27 @@ acoes = [
 # =========================================
 # COLETA
 # =========================================
+spy = yf.download(
+
+    "SPY",
+
+    period="1y",
+
+    progress=False,
+
+    auto_adjust=True
+
+)
+
+spy_retorno = (
+
+    (
+        spy["Close"].iloc[-1]
+        /
+        spy["Close"].iloc[0]
+    ) - 1
+
+) * 100
 
 dados = []
 
@@ -195,7 +261,16 @@ for ticker in acoes:
 
             "Sharpe": round(sharpe, 2),
 
-            "Score": score
+            "Score": score,
+            
+            "Análise IA": gerar_analise(
+
+                retorno_1y,
+                momentum,
+                volatilidade,
+                sharpe
+
+    )
 
         })
 
