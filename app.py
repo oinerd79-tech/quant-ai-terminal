@@ -8,13 +8,13 @@ import plotly.express as px
 
 finnhub_client = finnhub.Client(
 
-    api_key=st.secrets["FINNHUB_API"]
+    api_key=st.secrets["d88dp1hr01qq4342odmgd88dp1hr01qq4342odn0"]
 
 )
 
 td = TDClient(
 
-    apikey=st.secrets["TWELVE_API"]
+    apikey=st.secrets["9b78848e479b4d89b4470097333a67ab"]
 
 )
 
