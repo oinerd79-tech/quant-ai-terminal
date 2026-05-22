@@ -104,7 +104,16 @@ for ticker in acoes:
             continue
 
         preco = float(
-            df_preco["Close"].iloc[-1]
+            preco = round(
+
+    float(
+        df_preco["Close"].values[-1]
+    ),
+
+    2
+
+)
+            
         )
 
         retorno_1y = (
@@ -179,111 +188,115 @@ for ticker in acoes:
             f"Erro em {ticker}: {erro}"
         )
 
-        # =====================================
-        # HISTÓRICO 15 ANOS
-        # =====================================
+dados = []
 
-        historico_15y = acao.history(period="15y")
+    for ticker in acoes:
 
-        if historico_15y.empty:
-            crescimento_15y = 0
+    st.write(f"Processando: {ticker}")
 
-        else:
+    try:
 
-            preco_inicial_15y = historico_15y["Close"].iloc[0]
-            preco_final_15y = historico_15y["Close"].iloc[-1]
+        df_preco = yf.download(
 
-            crescimento_15y = (
-                (
-                    preco_final_15y - preco_inicial_15y
-                ) / preco_inicial_15y
-            ) * 100
+            ticker,
 
-        # =====================================
-        # MOMENTUM 12M
-        # =====================================
+            period="1y",
 
-        historico_1y = acao.history(period="1y")
+            progress=False,
 
-        if historico_1y.empty:
+            auto_adjust=True
 
-            momentum_12m = 0
-            volatilidade = 0
+        )
 
-        else:
+        if df_preco.empty:
 
-            preco_inicial_1y = historico_1y["Close"].iloc[0]
-            preco_final_1y = historico_1y["Close"].iloc[-1]
+            continue
 
-            momentum_12m = (
-                (
-                    preco_final_1y - preco_inicial_1y
-                ) / preco_inicial_1y
-            ) * 100
+        preco = round(
 
-            retornos = historico_1y["Close"].pct_change()
+            float(
+                df_preco["Close"].values[-1]
+            ),
 
-            volatilidade = (
-                retornos.std() * np.sqrt(252)
-            ) * 100
+            2
 
-        # =====================================
-        # CAGR 5 ANOS
-        # =====================================
+        )
 
-        historico_5y = acao.history(period="5y")
+        retorno_1y = (
 
-        if historico_5y.empty:
+            (
+                df_preco["Close"].iloc[-1]
+                /
+                df_preco["Close"].iloc[0]
+            ) - 1
 
-            retorno_5y = 0
-            cagr = 0
-            sharpe = 0
-            drawdown = 0
+        ) * 100
 
-        else:
+        volatilidade = (
 
-            preco_inicial_5y = historico_5y["Close"].iloc[0]
-            preco_final_5y = historico_5y["Close"].iloc[-1]
+            df_preco["Close"]
+            .pct_change()
+            .std()
 
-            retorno_5y = (
-                (
-                    preco_final_5y - preco_inicial_5y
-                ) / preco_inicial_5y
-            ) * 100
+        ) * (252 ** 0.5) * 100
 
-            anos = 5
+        momentum = (
 
-            cagr = (
-                (
-                    preco_final_5y / preco_inicial_5y
-                ) ** (1 / anos) - 1
-            ) * 100
+            df_preco["Close"]
+            .pct_change(90)
+            .iloc[-1]
 
-            retornos_diarios = historico_5y[
-                "Close"
-            ].pct_change().dropna()
+        ) * 100
 
-            volatilidade_sharpe = (
-                retornos_diarios.std() * np.sqrt(252)
-            )
+        sharpe = 0
 
-            retorno_medio = (
-                retornos_diarios.mean() * 252
-            )
+        if volatilidade > 0:
 
-            if volatilidade_sharpe > 0:
-                sharpe = retorno_medio / volatilidade_sharpe
-            else:
-                sharpe = 0
+            sharpe = retorno_1y / volatilidade
 
-            maximo = historico_5y["Close"].cummax()
+        score = 0
 
-            drawdown = (
-                (
-                    historico_5y["Close"] - maximo
-                ) / maximo
-            ).min() * 100
+        if retorno_1y > 20:
+            score += 25
 
+        if momentum > 10:
+            score += 25
+
+        if sharpe > 1:
+            score += 25
+
+        if volatilidade < 40:
+            score += 25
+
+        dados.append({
+
+            "Ticker": ticker,
+
+            "Preço": preco,
+
+            "Retorno 1Y %": round(retorno_1y, 2),
+
+            "Momentum 90D %": round(momentum, 2),
+
+            "Volatilidade %": round(volatilidade, 2),
+
+            "Sharpe": round(sharpe, 2),
+
+            "Score": score
+
+        })
+
+        st.success(f"{ticker} carregado")
+
+    except Exception as erro:
+
+        st.error(
+            f"Erro em {ticker}: {erro}"
+        )
+        
+        df = pd.DataFrame(dados)
+        st.dataframe(df)
+        
         # =====================================
         # SCORE QUANTITATIVO
         # =====================================
