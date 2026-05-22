@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import numpy as np
+import plotly.express as px
 
 # =========================================
 # CONFIG
@@ -276,8 +277,34 @@ st.dataframe(
 
 st.subheader("📊 Score dos Ativos")
 
-st.bar_chart(
+st.subheader("📊 Ranking de Score")
 
-    df.set_index("Ticker")["Score"]
+fig = px.bar(
+
+    df,
+
+    x="Ticker",
+
+    y="Score",
+
+    color="Score",
+
+    text="Score"
+
+)
+
+fig.update_layout(
+
+    template="plotly_dark",
+
+    height=500
+
+)
+
+st.plotly_chart(
+
+    fig,
+
+    use_container_width=True
 
 )
