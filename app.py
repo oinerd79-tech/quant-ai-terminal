@@ -134,7 +134,20 @@ acoes = [
     "META",
     "AMZN",
     "GOOGL",
-    "TSLA"
+    "TSLA",
+    "AMD",
+    "NFLX",
+    "AVGO",
+    "PLTR",
+    "INTC",
+    "CRM",
+    "ADBE",
+    "ORCL",
+    "QCOM",
+    "MU",
+    "SHOP",
+    "SNOW",
+    "UBER"
 
 ]
 
